@@ -3,6 +3,8 @@ const db = require('../connectors/postgres');
 const { sendKafkaMessage } = require('../connectors/kafka');
 const { validateTicketReservationDto } = require('../validation/reservation');
 const messagesType = require('../constants/messages');
+const router = require("express").Router();
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 module.exports = (app) => {
   // Register HTTP endpoint to create new user
@@ -24,6 +26,22 @@ module.exports = (app) => {
     });
 
     // TODO: Perform Stripe Payment Flow
+    router.post("/payment", (req, res) => {
+      stripe.charges.create(
+        {
+          source: req.body.tokenId,
+          amount: req.body.amount,
+          currency: "egp",
+        },
+        (stripeErr, stripeRes) => {
+          if (stripeErr) {
+            res.status(500).json(stripeErr);
+          } else {
+            res.status(200).json(stripeRes);
+          }
+        }
+      );
+    });
     // TODO: Update master list to reflect ticket sale
 
     // Persist ticket sale in database with a generated reference id so user can lookup ticket
