@@ -5,12 +5,18 @@ const { validateTicketReservationDto } = require('../validation/reservation');
 const messagesType = require('../constants/messages');
 const router = require("express").Router();
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+const axios = require('axios');
+const { json } = require('express');
 
 module.exports = (app) => {
   // Register HTTP endpoint to create new user
   app.post('/api/v1/reservation', async (req, res) => {
     // validate payload before proceeding with reservations
     const validationError = validateTicketReservationDto(req.body);
+    const categoryNumber = req.body.tickets[0].category;
+    const matchNumber = req.body.matchNumber;
+    let purschaseQuantity = req.body.tickets[0].quantity;
+    console.log(purschaseQuantity)
     if (validationError) {
       return res.status(403).send(validationError.message);
     }
@@ -43,7 +49,26 @@ module.exports = (app) => {
       );
     });
     // TODO: Update master list to reflect ticket sale
-
+    axios.get(`http://localhost:3000/api/matches?matchNumber=${matchNumber}`).then( res => {
+    let count = 0  
+    if(categoryNumber == 1){
+       count = JSON.stringify(res.data[0].availability.category1.count)
+       console.log(count)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+      }
+      else if(categoryNumber == 2){
+       count = JSON.stringify(res.data[0].availability.category2.count)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+      }
+      else if(categoryNumber == 3){
+       count = JSON.stringify(res.data[0].availability.category3.count)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+        }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+    
     // Persist ticket sale in database with a generated reference id so user can lookup ticket
     const ticketReservation = { id: v4(), ...req.body };
     // const reservation = await db('reservations').insert(ticketReservation).returning('*');
