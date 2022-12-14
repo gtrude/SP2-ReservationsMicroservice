@@ -17,6 +17,7 @@ module.exports = (app) => {
     const matchNumber = req.body.matchNumber;
     let purschaseQuantity = req.body.tickets[0].quantity;
     console.log(purschaseQuantity)
+    console.log(req.body.tickets.length)
     if (validationError) {
       return res.status(403).send(validationError.message);
     }
@@ -49,26 +50,27 @@ module.exports = (app) => {
       );
     });
     // TODO: Update master list to reflect ticket sale
+    for (let i = 0; i < req.body.tickets.length; i++){
     axios.get(`http://localhost:3000/api/matches?matchNumber=${matchNumber}`).then( res => {
-    let count = 0  
-    if(categoryNumber == 1){
+    let count = 0
+    if(req.body.tickets[i].category == 1){
        count = JSON.stringify(res.data[0].availability.category1.count)
        console.log(count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
       }
-      else if(categoryNumber == 2){
+      else if(req.body.tickets[i].category == 2){
        count = JSON.stringify(res.data[0].availability.category2.count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
       }
-      else if(categoryNumber == 3){
+      else if(req.body.tickets[i].category == 3){
        count = JSON.stringify(res.data[0].availability.category3.count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${categoryNumber}&count=${count - purschaseQuantity}`)
+       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
         }
     })
     .catch(err => {
       console.log(err)
     })
-    
+  }
     // Persist ticket sale in database with a generated reference id so user can lookup ticket
     const ticketReservation = { id: v4(), ...req.body };
     // const reservation = await db('reservations').insert(ticketReservation).returning('*');
