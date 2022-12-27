@@ -51,20 +51,20 @@ module.exports = (app) => {
     });
     // TODO: Update master list to reflect ticket sale
     for (let i = 0; i < req.body.tickets.length; i++){
-    axios.get(`http://localhost:3000/api/matches?matchNumber=${matchNumber}`).then( res => {
+    axios.get(`http://localhost:8080/api/matches?matchNumber=${matchNumber}`).then( res => {
     let count = 0
     if(req.body.tickets[i].category == 1){
        count = JSON.stringify(res.data[0].availability.category1.count)
        console.log(count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+       axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
       }
       else if(req.body.tickets[i].category == 2){
        count = JSON.stringify(res.data[0].availability.category2.count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+       axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
       }
       else if(req.body.tickets[i].category == 3){
        count = JSON.stringify(res.data[0].availability.category3.count)
-       axios.patch(`http://localhost:3000/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+       axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
         }
     })
     .catch(err => {

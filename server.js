@@ -6,6 +6,7 @@ const { startKafkaProducer } = require('./connectors/kafka');
 const cors = require("cors");
 const mongoose = require("mongoose");
 const matchesRoute = require("./routes/matches");
+const stripeRoute = require("./routes/stripe");
 
 //.env imports
 const dotenv = require("dotenv");
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 // Matches route
 app.use("/api/matches", matchesRoute);
+app.use("/api/stripe", stripeRoute);
 // Register the api routes
 apiRoutes(app);
 
@@ -35,7 +37,7 @@ app.use((req, res, next) => {
 });
 
 // Create HTTP Server and Listen for Requests
-app.listen(3000, async (req, res) => {
+app.listen(8080, async (req, res) => {
   // Start Kafka Producer
   connect();
   await startKafkaProducer();
