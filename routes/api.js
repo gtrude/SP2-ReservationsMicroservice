@@ -67,27 +67,25 @@ module.exports = (app) => {
         return res.status(400).send(`could not process payment: ${stripeError.message}`);
       }
       // TODO: Update master list to reflect ticket sale
-    for (let i = 0; i < req.body.tickets.length; i++){
-      axios.get(`http://localhost:8080/api/matches?matchNumber=${matchNumber}`).then( res => {
+      axios.get(`http://localhost:8080/api/matches?matchNumber=${req.body.matchNumber}`).then( res => {
       let count = 0
-      if(req.body.tickets[i].category == 1){
+      if(req.body.tickets.category == 1){
          count = JSON.stringify(res.data[0].availability.category1.count)
          console.log(count)
-         axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+         axios.patch(`http://localhost:8080/api/matches?matchNumber=${req.body.matchNumber}&categoryNumber=${req.body.tickets.category}&count=${count - req.body.tickets.quantity}`)
         }
-        else if(req.body.tickets[i].category == 2){
+        else if(req.body.tickets.category == 2){
          count = JSON.stringify(res.data[0].availability.category2.count)
-         axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+         axios.patch(`http://localhost:8080/api/matches?matchNumber=${req.body.matchNumber}&categoryNumber=${req.body.tickets.category}&count=${count - req.body.tickets.quantity}`)
         }
-        else if(req.body.tickets[i].category == 3){
+        else if(req.body.tickets.category == 3){
          count = JSON.stringify(res.data[0].availability.category3.count)
-         axios.patch(`http://localhost:8080/api/matches?matchNumber=${matchNumber}&categoryNumber=${req.body.tickets[i].category}&count=${count - req.body.tickets[i].quantity}`)
+         axios.patch(`http://localhost:8080/api/matches?matchNumber=${req.body.matchNumber}&categoryNumber=${req.body.tickets.category}&count=${count - req.body.tickets.quantity}`)
           }
       })
       .catch(err => {
         console.log(err)
       })
-    }
       // Persist ticket sale in database with a generated reference id so user can lookup ticket
       const ticketReservation = { id: v4(), ...req.body };
       // const reservation = await db('reservations').insert(ticketReservation).returning('*');
