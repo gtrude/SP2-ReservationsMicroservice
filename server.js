@@ -27,6 +27,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
+app.use("/api/test", (req, res)=>{
+  return res.send("Successfull test")
+});
 // Matches route
 app.use("/api/matches", matchesRoute);
 app.use("/api/stripe", stripeRoute);
