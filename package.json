@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "GIU Software Project Shop API & Kafka Producer",
   "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@hapi/joi": "17.1.1",
