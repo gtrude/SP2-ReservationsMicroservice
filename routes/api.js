@@ -35,6 +35,7 @@ module.exports = (app) => {
       // Perform Stripe Payment Flow
       try {
         const token = await stripe.tokens.create({
+          email: req.body.email,
           card: {
             number: req.body.card.number,
             exp_month: req.body.card.expirationMonth,
@@ -42,8 +43,9 @@ module.exports = (app) => {
             cvc: req.body.card.cvc,
           },
         });
+        console.log(token.email)
         await stripe.charges.create({
-          amount: req.body.tickets.quantity * req.body.tickets.price,
+          amount: req.body.tickets.quantity * req.body.tickets.price * 100,
           currency: 'usd',
           source: token.id,
           description: 'FIFA World Cup Ticket Reservation',
