@@ -1,0 +1,17 @@
+{
+    "message": "Ticket Purchase Successful",
+    "id": "00124d6b-f659-4ca1-b18f-95dc06933516",
+    "email": "email",
+    "matchNumber": 1,
+    "tickets": {
+        "category": 1,
+        "quantity": 1,
+        "price": 75
+    },
+    "card": {
+        "number": "4242424242424242",
+        "expirationMonth": 12,
+        "expirationYear": 2024,
+        "cvc": "123"
+    }
+}
