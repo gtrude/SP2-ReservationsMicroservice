@@ -71,7 +71,7 @@ router.delete("/", async (req, res) => {
   }
 });
 
-//GET by id
+//GET by matchNumnber
 router.get("/", async(req, res, next) => {
     try {
         const match = await Match.find(
